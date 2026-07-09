@@ -1,0 +1,543 @@
+<title>Spec-Driven Development — Deck</title>
+<style>
+  :root {
+    --paper: #EDF1F3;
+    --paper-2: #E1E8EC;
+    --card: #FFFFFF;
+    --accent: #2B5FA8;
+    --accent-soft: #DEE8F4;
+    --chaos: #B5303E;
+    --chaos-soft: #F6E3E4;
+    --good: #2F7D5B;
+    --good-soft: #DDEFE6;
+    --text: #16212A;
+    --text-soft: #55677A;
+    --line: #C9D4DA;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
+    --serif: "Iowan Old Style", "Sitka Text", Palatino, Georgia, serif;
+    --sans: -apple-system, "Segoe UI", system-ui, Roboto, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #0C1218; --paper-2: #131C25; --card: #16212B;
+      --accent: #6C9BDB; --accent-soft: #1C2C40;
+      --chaos: #E0717C; --chaos-soft: #33191D;
+      --good: #6BC79A; --good-soft: #17281F;
+      --text: #DCE4E9; --text-soft: #8CA0AF; --line: #2A3745;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #0C1218; --paper-2: #131C25; --card: #16212B;
+    --accent: #6C9BDB; --accent-soft: #1C2C40;
+    --chaos: #E0717C; --chaos-soft: #33191D;
+    --good: #6BC79A; --good-soft: #17281F;
+    --text: #DCE4E9; --text-soft: #8CA0AF; --line: #2A3745;
+  }
+  :root[data-theme="light"] {
+    --paper: #EDF1F3; --paper-2: #E1E8EC; --card: #FFFFFF;
+    --accent: #2B5FA8; --accent-soft: #DEE8F4;
+    --chaos: #B5303E; --chaos-soft: #F6E3E4;
+    --good: #2F7D5B; --good-soft: #DDEFE6;
+    --text: #16212A; --text-soft: #55677A; --line: #C9D4DA;
+  }
+
+  * { box-sizing: border-box; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+  body { background: var(--paper); }
+  .deck { font-family: var(--sans); color: var(--text); }
+
+  /* ---- viewport & slides ---- */
+  .stage {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 1.2rem 1rem 0;
+  }
+  .slide {
+    display: none;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    aspect-ratio: 16 / 9;
+    min-height: 420px;
+    padding: 2.2rem 2.6rem;
+    position: relative;
+    overflow: hidden;
+    flex-direction: column;
+  }
+  .slide.active { display: flex; animation: fade .35s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @media (max-width: 720px) {
+    .slide { aspect-ratio: auto; min-height: 78vh; padding: 1.5rem 1.3rem; }
+  }
+
+  .kicker {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex; align-items: center; gap: 0.5rem;
+    margin-bottom: 0.9rem;
+  }
+  .kicker::before { content: ""; width: 7px; height: 7px; background: var(--accent); transform: rotate(45deg); }
+  .slide h2 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(1.4rem, 3.2vw, 2rem);
+    line-height: 1.12;
+    margin: 0 0 0.3rem;
+    text-wrap: balance;
+  }
+  .slide .sub { color: var(--text-soft); font-size: 0.98rem; margin: 0 0 1.4rem; max-width: 60ch; }
+  .fill { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 0; }
+
+  .slide-foot {
+    position: absolute;
+    bottom: 1rem; left: 2.6rem; right: 2.6rem;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--mono); font-size: 0.68rem; color: var(--text-soft);
+    border-top: 1px solid var(--line); padding-top: 0.6rem;
+  }
+  @media (max-width: 720px) { .slide-foot { left: 1.3rem; right: 1.3rem; } }
+
+  /* ---- title slide ---- */
+  .title-slide { justify-content: center; text-align: center; align-items: center; }
+  .title-slide h1 {
+    font-family: var(--serif); font-weight: 500;
+    font-size: clamp(2rem, 6vw, 3.4rem); line-height: 1.05;
+    margin: 0.4rem 0 1rem; text-wrap: balance;
+  }
+  .title-slide h1 em { font-style: italic; color: var(--accent); }
+  .title-slide .strike { color: var(--chaos); text-decoration: line-through; text-decoration-thickness: 2px; }
+  .title-slide p { color: var(--text-soft); max-width: 44ch; margin: 0 auto; }
+  .badge {
+    display: inline-flex; gap: 0.5rem; align-items: center;
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-soft); border: 1px solid var(--line); border-radius: 999px;
+    padding: 0.35rem 0.9rem; margin-top: 1.6rem;
+  }
+
+  /* ---- generic diagram bits ---- */
+  .row { display: flex; gap: 1rem; align-items: stretch; }
+  .col { display: flex; flex-direction: column; gap: 1rem; }
+  @media (max-width: 720px) { .row { flex-direction: column; } }
+
+  .box {
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 1rem 1.1rem;
+    background: var(--card);
+    flex: 1;
+    min-width: 0;
+  }
+  .box .bx-label {
+    font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-soft); margin-bottom: 0.5rem; display: block;
+  }
+  .box h3 { font-size: 1rem; margin: 0 0 0.4rem; }
+  .box p { font-size: 0.86rem; color: var(--text-soft); margin: 0; }
+  .box ul { margin: 0.3rem 0 0; padding-left: 1.1rem; font-size: 0.85rem; color: var(--text-soft); }
+  .box li { margin: 0.2rem 0; }
+
+  .box.vibe { background: var(--chaos-soft); border-color: var(--chaos); }
+  .box.vibe .bx-label { color: var(--chaos); }
+  .box.spec { background: var(--accent-soft); border-color: var(--accent); }
+  .box.spec .bx-label { color: var(--accent); }
+  .box.good { background: var(--good-soft); border-color: var(--good); }
+  .box.good .bx-label { color: var(--good); }
+
+  .arrow { display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 1.4rem; flex-shrink: 0; }
+  @media (max-width: 720px) { .arrow { transform: rotate(90deg); } }
+
+  /* file chips */
+  .chip {
+    font-family: var(--mono); font-size: 0.78rem;
+    border: 1px solid var(--line); border-radius: 4px;
+    padding: 0.5rem 0.75rem; background: var(--paper-2);
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .chip .dot { width: 7px; height: 7px; border-radius: 2px; background: var(--accent); flex-shrink: 0; }
+  .chip small { color: var(--text-soft); font-family: var(--sans); font-size: 0.7rem; margin-left: auto; }
+
+  /* cycle diagram */
+  .cycle { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.6rem; align-items: stretch; }
+  @media (max-width: 720px) { .cycle { grid-template-columns: 1fr 1fr; } }
+  .step {
+    border: 1px solid var(--line); border-radius: 5px; padding: 0.9rem 0.8rem;
+    background: var(--paper-2); position: relative; text-align: center;
+  }
+  .step .n {
+    font-family: var(--mono); font-size: 0.68rem; color: var(--accent);
+    border: 1px solid var(--accent); border-radius: 999px;
+    width: 1.5rem; height: 1.5rem; display: inline-flex; align-items: center; justify-content: center;
+    margin-bottom: 0.5rem;
+  }
+  .step h4 { font-size: 0.9rem; margin: 0 0 0.2rem; }
+  .step p { font-size: 0.75rem; color: var(--text-soft); margin: 0; }
+
+  /* merge diagram */
+  .merge { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center; }
+  @media (max-width: 720px) { .merge { grid-template-columns: 1fr; } }
+  .stack { display: flex; flex-direction: column; gap: 0.5rem; }
+  .pill {
+    border: 1px solid var(--line); border-radius: 4px; padding: 0.55rem 0.8rem;
+    font-size: 0.85rem; background: var(--paper-2);
+  }
+  .pill.old { border-style: dashed; color: var(--text-soft); }
+  .pill.new { background: var(--accent-soft); border-color: var(--accent); color: var(--text); font-weight: 600; }
+
+  /* benefit grid */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+  @media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } }
+  .ben {
+    border: 1px solid var(--line); border-radius: 5px; padding: 0.75rem 0.9rem;
+    display: flex; gap: 0.7rem; align-items: flex-start; background: var(--card);
+  }
+  .ben .ic {
+    width: 1.7rem; height: 1.7rem; border-radius: 4px; flex-shrink: 0;
+    background: var(--accent-soft); color: var(--accent);
+    display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem;
+    font-family: var(--mono);
+  }
+  .ben b { font-size: 0.9rem; display: block; }
+  .ben span { font-size: 0.8rem; color: var(--text-soft); }
+
+  /* big contrast columns for closing */
+  .vs { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--line); border-radius: 5px; overflow: hidden; }
+  @media (max-width: 720px) { .vs { grid-template-columns: 1fr; } }
+  .vs > div { padding: 1rem 1.1rem; }
+  .vs .l { background: var(--chaos-soft); border-right: 1px solid var(--line); }
+  .vs .r { background: var(--good-soft); }
+  .vs h4 { margin: 0 0 0.6rem; font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; }
+  .vs .l h4 { color: var(--chaos); }
+  .vs .r h4 { color: var(--good); }
+  .vs ul { margin: 0; padding-left: 1.1rem; font-size: 0.86rem; }
+  .vs li { margin: 0.3rem 0; }
+
+  /* changelog ledger */
+  .ledger-stack { display: flex; flex-direction: column; gap: 0.5rem; }
+  .entry {
+    display: grid; grid-template-columns: auto 1fr auto; gap: 0.8rem; align-items: center;
+    border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 4px;
+    padding: 0.55rem 0.85rem; background: var(--card);
+    animation: slidein .4s ease backwards;
+  }
+  .entry:nth-child(1) { animation-delay: .05s; }
+  .entry:nth-child(2) { animation-delay: .13s; }
+  .entry:nth-child(3) { animation-delay: .21s; }
+  .entry:nth-child(4) { animation-delay: .29s; }
+  @keyframes slidein { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
+  .entry .date { font-family: var(--mono); font-size: 0.72rem; color: var(--text-soft); font-variant-numeric: tabular-nums; }
+  .entry .what { font-size: 0.88rem; font-weight: 600; }
+  .entry .spec-link { font-family: var(--mono); font-size: 0.68rem; color: var(--accent); white-space: nowrap; }
+
+  /* checklist */
+  .cl { display: grid; gap: 0.55rem; margin: 0; padding: 0; list-style: none; }
+  .cl li { display: flex; gap: 0.7rem; align-items: center; font-size: 0.92rem; }
+  .cl .n { font-family: var(--mono); font-size: 0.72rem; color: var(--accent); border: 1px solid var(--accent); border-radius: 999px; width: 1.6rem; height: 1.6rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+  /* ---- controls ---- */
+  .controls {
+    max-width: 1000px; margin: 1rem auto 2rem; padding: 0 1rem;
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  }
+  .dots { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .dots button {
+    width: 9px; height: 9px; border-radius: 999px; border: none; padding: 0; cursor: pointer;
+    background: var(--line); transition: background .2s, transform .2s;
+  }
+  .dots button.on { background: var(--accent); transform: scale(1.3); }
+  .nav { display: flex; gap: 0.5rem; }
+  .nav button {
+    font-family: var(--mono); font-size: 0.8rem; cursor: pointer;
+    background: var(--card); color: var(--text); border: 1px solid var(--line);
+    border-radius: 4px; padding: 0.4rem 0.9rem;
+  }
+  .nav button:hover { border-color: var(--accent); color: var(--accent); }
+  .nav button:disabled { opacity: 0.4; cursor: default; }
+  .nav button:focus-visible, .dots button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .counter { font-family: var(--mono); font-size: 0.78rem; color: var(--text-soft); font-variant-numeric: tabular-nums; }
+
+  /* ---- fullscreen / presentation mode ---- */
+  .deck:fullscreen {
+    background: var(--paper);
+    display: flex; flex-direction: column; justify-content: center;
+    height: 100vh; overflow: hidden; padding: 0.5rem 0;
+  }
+  .deck:-webkit-full-screen {
+    background: var(--paper);
+    display: flex; flex-direction: column; justify-content: center;
+    height: 100vh; overflow: hidden;
+  }
+  .deck:fullscreen .stage {
+    max-width: min(95vw, calc((100vh - 96px) * 16 / 9));
+    width: 100%; margin: 0 auto; padding: 0;
+  }
+  .deck:-webkit-full-screen .stage {
+    max-width: min(95vw, calc((100vh - 96px) * 16 / 9));
+    width: 100%; margin: 0 auto; padding: 0;
+  }
+  .deck:fullscreen .slide { min-height: 0; }
+  .deck:fullscreen .controls { margin: 0.7rem auto 0.2rem; }
+
+  /* pseudo-fullscreen fallback (when the native API is blocked in the iframe) */
+  .deck.pseudo-fs {
+    position: fixed; inset: 0; z-index: 9999;
+    background: var(--paper);
+    display: flex; flex-direction: column; justify-content: center;
+    overflow: hidden; padding: 0.5rem 0;
+  }
+  .deck.pseudo-fs .stage {
+    max-width: min(95vw, calc((100vh - 96px) * 16 / 9));
+    width: 100%; margin: 0 auto; padding: 0;
+  }
+  .deck.pseudo-fs .slide { min-height: 0; }
+  .deck.pseudo-fs .controls { margin: 0.7rem auto 0.2rem; }
+</style>
+
+<div class="deck">
+  <div class="stage">
+
+    <!-- 1 TITLE -->
+    <section class="slide title-slide active">
+      <div class="kicker" style="justify-content:center;">For new interns with coding agents</div>
+      <h1>Stop <span class="strike">vibe-coding</span>.<br>Start with a <em>spec</em>.</h1>
+      <p>Five slides on why writing the plan first makes an AI coding agent faster, not slower — for anything bigger than a one-off script.</p>
+      <span class="badge">Spec-Driven Development · 101</span>
+      <div class="slide-foot"><span>SDD 101</span><span>01 / 08</span></div>
+    </section>
+
+    <!-- 2 THE CONTRAST -->
+    <section class="slide">
+      <div class="kicker">The core difference</div>
+      <h2>Two ways to work with an agent</h2>
+      <p class="sub">Same tools, same model. What changes is whether the thinking is written down.</p>
+      <div class="fill">
+        <div class="row">
+          <div class="box vibe">
+            <span class="bx-label">✗ Vibe-coding</span>
+            <h3>Improvise turn by turn</h3>
+            <ul>
+              <li>Decisions live in chat scrollback</li>
+              <li>Next session starts from zero</li>
+              <li>Scope creep is invisible</li>
+              <li>"Why this stack?" → nobody knows</li>
+            </ul>
+          </div>
+          <div class="arrow">→</div>
+          <div class="box spec">
+            <span class="bx-label">✓ Spec-driven</span>
+            <h3>Write the plan, then build</h3>
+            <ul>
+              <li>Decisions written down, with the "why"</li>
+              <li>Anyone can pick up mid-project</li>
+              <li>Out-of-scope is stated up front</li>
+              <li>Every choice is traceable to a file</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>SDD 101</span><span>02 / 08</span></div>
+    </section>
+
+    <!-- 3 CONSTITUTION -->
+    <section class="slide">
+      <div class="kicker">Step 1 · Foundation</div>
+      <h2>A constitution the whole project answers to</h2>
+      <p class="sub">Before any feature: three short files everything else has to obey.</p>
+      <div class="fill">
+        <div class="merge">
+          <div class="stack">
+            <div class="chip"><span class="dot"></span>mission.md <small>who &amp; why</small></div>
+            <div class="chip"><span class="dot"></span>tech-stack.md <small>the stack</small></div>
+            <div class="chip"><span class="dot"></span>roadmap.md <small>phase order</small></div>
+          </div>
+          <div class="arrow">→</div>
+          <div class="box good" style="flex:none;">
+            <span class="bx-label">Every phase checks against these</span>
+            <p style="color:var(--text);font-size:0.9rem;">No re-litigating the stack each feature. Deferred choices (auth, tests, hosting) are named as deferred — not silently guessed.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>SDD 101</span><span>03 / 08</span></div>
+    </section>
+
+    <!-- 4 FEATURE-SPEC LOOP -->
+    <section class="slide">
+      <div class="kicker">Step 2 · Repeat per feature</div>
+      <h2>The same loop for every unit of work</h2>
+      <p class="sub">Find the phase → branch → ask what's ambiguous → write three files → then code.</p>
+      <div class="fill">
+        <div class="cycle">
+          <div class="step"><div class="n">1</div><h4>requirements.md</h4><p>Scope, decisions, what's out</p></div>
+          <div class="step"><div class="n">2</div><h4>plan.md</h4><p>Small numbered task groups</p></div>
+          <div class="step"><div class="n">3</div><h4>validation.md</h4><p>Checklist for "done"</p></div>
+          <div class="step"><div class="n">4</div><h4>build &amp; merge</h4><p>One branch per phase</p></div>
+        </div>
+        <p style="text-align:center;color:var(--text-soft);font-size:0.85rem;margin-top:1.2rem;">The agent asks you 3 grouped questions on real forks in the road — instead of guessing wrong and un-guessing three phases later.</p>
+      </div>
+      <div class="slide-foot"><span>SDD 101</span><span>04 / 08</span></div>
+    </section>
+
+    <!-- 5 SKILLS -->
+    <section class="slide">
+      <div class="kicker">Step 3 · Compounding</div>
+      <h2>When a process repeats, encode it as a skill</h2>
+      <p class="sub">Typed the same instructions 3 times? That's the signal to automate them.</p>
+      <div class="fill">
+        <div class="merge">
+          <div class="box vibe" style="flex:none;">
+            <span class="bx-label">Before</span>
+            <p style="color:var(--text);font-size:0.88rem;">Paste the full "start a phase" instructions every single time. They drift, they get forgotten.</p>
+          </div>
+          <div class="arrow">→</div>
+          <div class="stack">
+            <div class="chip"><span class="dot"></span>skills/next-phase <small>"next phase"</small></div>
+            <div class="chip"><span class="dot"></span>skills/changelog <small>auto after merge</small></div>
+          </div>
+        </div>
+        <p style="text-align:center;color:var(--text-soft);font-size:0.85rem;margin-top:1.2rem;">A skill is a spec for a <em>process</em> — say the trigger phrase and the agent runs it the same way, every time.</p>
+      </div>
+      <div class="slide-foot"><span>SDD 101</span><span>05 / 08</span></div>
+    </section>
+
+    <!-- 6 REPLANNING -->
+    <section class="slide">
+      <div class="kicker">Step 4 · Course correction</div>
+      <h2>Re-plan by editing one file — not renegotiating</h2>
+      <p class="sub">Three phases turned out to be one. Because the roadmap is a file, that's a small visible edit.</p>
+      <div class="fill">
+        <div class="merge">
+          <div class="stack">
+            <div class="pill old">Phase 3 · Booking</div>
+            <div class="pill old">Phase 4 · Roles</div>
+            <div class="pill old">Phase 5 · Polish</div>
+          </div>
+          <div class="arrow">→</div>
+          <div class="stack">
+            <div class="pill new">Phase 3 · Booking, roles &amp; polish</div>
+            <p style="font-size:0.82rem;color:var(--text-soft);margin:0.3rem 0 0;">Then a fresh spec is derived from the updated roadmap — structure changes <em>with</em> reality, not against it.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>SDD 101</span><span>06 / 08</span></div>
+    </section>
+
+    <!-- 7 CHANGELOG -->
+    <section class="slide">
+      <div class="kicker">Step 5 · The record</div>
+      <h2>Every merge leaves a receipt</h2>
+      <p class="sub">One CHANGELOG.md entry per phase — dated, plain-language, linked to its spec. Auto-appended by the changelog skill after each merge.</p>
+      <div class="fill">
+        <div class="ledger-stack">
+          <div class="entry"><span class="date">07-09</span><span class="what">Phase 3 · Booking, roles &amp; polish</span><span class="spec-link">→ spec</span></div>
+          <div class="entry"><span class="date">07-09</span><span class="what">Phase 2 · Read-only dashboard</span><span class="spec-link">→ spec</span></div>
+          <div class="entry"><span class="date">07-09</span><span class="what">Phase 1 · Core data model</span><span class="spec-link">→ spec</span></div>
+          <div class="entry"><span class="date">07-09</span><span class="what">Phase 0 · Project setup</span><span class="spec-link">→ spec</span></div>
+        </div>
+        <p style="text-align:center;color:var(--text-soft);font-size:0.85rem;margin-top:1.1rem;">Answers "what shipped, and when?" in seconds — no <code style="font-family:var(--mono);">git log</code> archaeology. The one artifact a future intern reads first.</p>
+      </div>
+      <div class="slide-foot"><span>SDD 101</span><span>07 / 08</span></div>
+    </section>
+
+    <!-- 8 BENEFITS + CLOSE -->
+    <section class="slide">
+      <div class="kicker">The payoff · Your move</div>
+      <h2>Same work, ordered so it pays off later</h2>
+      <div class="fill">
+        <div class="grid2">
+          <div class="ben"><span class="ic">↧</span><div><b>Onboarding</b><span>Read the roadmap, not the whole chat log</span></div></div>
+          <div class="ben"><span class="ic">?</span><div><b>Traceability</b><span>Every decision has a dated reason</span></div></div>
+          <div class="ben"><span class="ic">✓</span><div><b>Review</b><span>Diff checked against a pre-written list</span></div></div>
+          <div class="ben"><span class="ic">⑂</span><div><b>Git hygiene</b><span>One mergeable branch per phase</span></div></div>
+          <div class="ben"><span class="ic">≡</span><div><b>History</b><span>A changelog entry per merge</span></div></div>
+          <div class="ben"><span class="ic">↻</span><div><b>Reuse</b><span>Process encoded once as a skill</span></div></div>
+        </div>
+        <ul class="cl" style="margin-top:1.1rem;">
+          <li><span class="n">→</span>Next time: ask for a constitution before the first feature, and a spec before every unit of work after that.</li>
+        </ul>
+      </div>
+      <div class="slide-foot"><span>SDD 101</span><span>08 / 08</span></div>
+    </section>
+
+  </div>
+
+  <div class="controls">
+    <div class="nav">
+      <button id="prev" aria-label="Previous slide">← Prev</button>
+      <button id="next" aria-label="Next slide">Next →</button>
+      <button id="fs" aria-label="Toggle full screen">⛶ Full screen</button>
+    </div>
+    <div class="dots" id="dots" role="tablist" aria-label="Slides"></div>
+    <span class="counter" id="counter">1 / 8</span>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+    var dotsWrap = document.getElementById('dots');
+    var prev = document.getElementById('prev');
+    var next = document.getElementById('next');
+    var counter = document.getElementById('counter');
+    var i = 0;
+
+    slides.forEach(function (_, idx) {
+      var b = document.createElement('button');
+      b.setAttribute('role', 'tab');
+      b.setAttribute('aria-label', 'Go to slide ' + (idx + 1));
+      b.addEventListener('click', function () { go(idx); });
+      dotsWrap.appendChild(b);
+    });
+    var dots = Array.prototype.slice.call(dotsWrap.children);
+
+    function go(n) {
+      i = Math.max(0, Math.min(slides.length - 1, n));
+      slides.forEach(function (s, idx) { s.classList.toggle('active', idx === i); });
+      dots.forEach(function (d, idx) { d.classList.toggle('on', idx === i); });
+      counter.textContent = (i + 1) + ' / ' + slides.length;
+      prev.disabled = i === 0;
+      next.disabled = i === slides.length - 1;
+    }
+
+    prev.addEventListener('click', function () { go(i - 1); });
+    next.addEventListener('click', function () { go(i + 1); });
+
+    var deck = document.querySelector('.deck');
+    var fs = document.getElementById('fs');
+    function fsActive() {
+      return document.fullscreenElement || document.webkitFullscreenElement || deck.classList.contains('pseudo-fs');
+    }
+    function enterPseudo() { deck.classList.add('pseudo-fs'); syncFs(); }
+    function exitPseudo() { deck.classList.remove('pseudo-fs'); syncFs(); }
+    function toggleFs() {
+      var native = document.fullscreenElement || document.webkitFullscreenElement;
+      if (native) {
+        (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+        return;
+      }
+      if (deck.classList.contains('pseudo-fs')) { exitPseudo(); return; }
+      var req = deck.requestFullscreen || deck.webkitRequestFullscreen;
+      if (req) {
+        var p = req.call(deck);
+        if (p && p.catch) { p.catch(enterPseudo); }
+      } else {
+        enterPseudo();
+      }
+    }
+    fs.addEventListener('click', toggleFs);
+    function syncFs() { fs.textContent = fsActive() ? '⤢ Exit full screen' : '⛶ Full screen'; }
+    document.addEventListener('fullscreenchange', syncFs);
+    document.addEventListener('webkitfullscreenchange', syncFs);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') go(i + 1);
+      else if (e.key === 'ArrowLeft') go(i - 1);
+      else if (e.key === 'f' || e.key === 'F') toggleFs();
+      else if (e.key === 'Escape' && deck.classList.contains('pseudo-fs')) exitPseudo();
+    });
+
+    go(0);
+  })();
+</script>
