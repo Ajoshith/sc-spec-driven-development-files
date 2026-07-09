@@ -2,6 +2,18 @@
 
 All notable changes to AgentClinic are recorded here, newest first.
 
+## 2026-07-09 — Phase 3: Booking, roles, and polish
+
+- Added a booking flow: pick an agent, a therapy, and a time to create an
+  appointment, with a per-therapy-slot double-booking check.
+- Added an appointments list split into upcoming and past.
+- Added a cosmetic "Viewing as: Agent / Staff" role toggle; staff-only
+  mode unlocks adding therapies and cancelling/rescheduling appointments.
+- Polish pass: consistent styling across all dashboard views, responsive
+  layout check, and empty/pending states throughout.
+
+Spec: [specs/2026-07-09-booking-roles-polish/](specs/2026-07-09-booking-roles-polish/)
+
 ## 2026-07-09 — Phase 2: Read-only dashboard
 
 - Home page is now the real agents dashboard: agents list with

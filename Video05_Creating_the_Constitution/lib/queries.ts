@@ -6,7 +6,12 @@ import type {
   Therapy,
   TherapyWithAilments,
   Appointment,
+  AppointmentWithDetails,
 } from "./types";
+
+export type MutationResult<T> =
+  | { ok: true; value: T }
+  | { ok: false; error: string };
 
 export function listAgents(): Agent[] {
   return getDb().prepare("SELECT id, name FROM agents ORDER BY id").all() as Agent[];
@@ -63,6 +68,90 @@ export function listAppointments(): Appointment[] {
   return getDb()
     .prepare("SELECT id, agent_id, therapy_id, scheduled_at FROM appointments ORDER BY scheduled_at")
     .all() as Appointment[];
+}
+
+export function listAppointmentsWithDetails(): AppointmentWithDetails[] {
+  return getDb()
+    .prepare(
+      `SELECT appointments.id, appointments.agent_id, appointments.therapy_id,
+              appointments.scheduled_at, agents.name AS agent_name,
+              therapies.name AS therapy_name
+       FROM appointments
+       JOIN agents ON agents.id = appointments.agent_id
+       JOIN therapies ON therapies.id = appointments.therapy_id
+       ORDER BY appointments.scheduled_at`
+    )
+    .all() as AppointmentWithDetails[];
+}
+
+function findTherapyConflict(
+  therapyId: number,
+  scheduledAt: string,
+  excludeAppointmentId?: number
+): boolean {
+  const conflict = getDb()
+    .prepare(
+      `SELECT id FROM appointments
+       WHERE therapy_id = ? AND scheduled_at = ? AND id != ?`
+    )
+    .get(therapyId, scheduledAt, excludeAppointmentId ?? -1);
+  return Boolean(conflict);
+}
+
+export function createAppointment(
+  agentId: number,
+  therapyId: number,
+  scheduledAt: string
+): MutationResult<Appointment> {
+  if (findTherapyConflict(therapyId, scheduledAt)) {
+    return { ok: false, error: "That therapy is already booked at that time." };
+  }
+  const result = getDb()
+    .prepare(
+      "INSERT INTO appointments (agent_id, therapy_id, scheduled_at) VALUES (?, ?, ?)"
+    )
+    .run(agentId, therapyId, scheduledAt);
+  return {
+    ok: true,
+    value: {
+      id: result.lastInsertRowid as number,
+      agent_id: agentId,
+      therapy_id: therapyId,
+      scheduled_at: scheduledAt,
+    },
+  };
+}
+
+export function cancelAppointment(id: number): void {
+  getDb().prepare("DELETE FROM appointments WHERE id = ?").run(id);
+}
+
+export function rescheduleAppointment(
+  id: number,
+  scheduledAt: string
+): MutationResult<Appointment> {
+  const appointment = getDb()
+    .prepare(
+      "SELECT id, agent_id, therapy_id, scheduled_at FROM appointments WHERE id = ?"
+    )
+    .get(id) as Appointment | undefined;
+  if (!appointment) {
+    return { ok: false, error: "Appointment not found." };
+  }
+  if (findTherapyConflict(appointment.therapy_id, scheduledAt, id)) {
+    return { ok: false, error: "That therapy is already booked at that time." };
+  }
+  getDb()
+    .prepare("UPDATE appointments SET scheduled_at = ? WHERE id = ?")
+    .run(scheduledAt, id);
+  return { ok: true, value: { ...appointment, scheduled_at: scheduledAt } };
+}
+
+export function addTherapy(name: string, description: string | null): Therapy {
+  const result = getDb()
+    .prepare("INSERT INTO therapies (name, description) VALUES (?, ?)")
+    .run(name, description);
+  return { id: result.lastInsertRowid as number, name, description };
 }
 
 export function listAgentsWithAilments(): AgentWithAilments[] {
