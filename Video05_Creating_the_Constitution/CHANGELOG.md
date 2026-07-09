@@ -2,6 +2,20 @@
 
 All notable changes to AgentClinic are recorded here, newest first.
 
+## 2026-07-09 — Phase 5: Dedicated list pages
+
+- Agents and Therapies moved off the home page onto their own
+  `/agents` and `/therapies` routes, each full-width with their own
+  empty state.
+- Home page now just links to them via nav cards — no inline lists.
+- The "Viewing as: Agent/Staff" toggle moved to the root layout and now
+  persists as you navigate between pages, instead of resetting per page.
+- Fixed a bug where a plain anchor link caused a full page reload that
+  wiped the role state; added a small `ScrollToHash` helper so in-page
+  scrolling stays reliable without depending on that.
+
+Spec: [specs/2026-07-09-dedicated-list-pages/](specs/2026-07-09-dedicated-list-pages/)
+
 ## 2026-07-09 — Phase 4: Site shell and navigation
 
 - Added a persistent nav bar (Home, Agents, Therapies, Appointments,
