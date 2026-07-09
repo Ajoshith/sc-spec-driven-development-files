@@ -4,6 +4,7 @@ import type {
   AgentWithAilments,
   Ailment,
   Therapy,
+  TherapyWithAilments,
   Appointment,
 } from "./types";
 
@@ -33,6 +34,29 @@ export function listTherapiesForAilment(ailmentId: number): Therapy[] {
        ORDER BY therapies.id`
     )
     .all(ailmentId) as Therapy[];
+}
+
+export function listTherapies(): Therapy[] {
+  return getDb().prepare("SELECT id, name, description FROM therapies ORDER BY id").all() as Therapy[];
+}
+
+export function listAilmentsForTherapy(therapyId: number): Ailment[] {
+  return getDb()
+    .prepare(
+      `SELECT ailments.id, ailments.name, ailments.description
+       FROM ailments
+       JOIN ailment_therapies ON ailment_therapies.ailment_id = ailments.id
+       WHERE ailment_therapies.therapy_id = ?
+       ORDER BY ailments.id`
+    )
+    .all(therapyId) as Ailment[];
+}
+
+export function listTherapiesWithAilments(): TherapyWithAilments[] {
+  return listTherapies().map((therapy) => ({
+    ...therapy,
+    ailments: listAilmentsForTherapy(therapy.id),
+  }));
 }
 
 export function listAppointments(): Appointment[] {

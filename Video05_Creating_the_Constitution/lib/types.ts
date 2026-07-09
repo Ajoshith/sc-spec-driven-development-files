@@ -35,3 +35,7 @@ export interface Appointment {
 export interface AgentWithAilments extends Agent {
   ailments: Ailment[];
 }
+
+export interface TherapyWithAilments extends Therapy {
+  ailments: Ailment[];
+}
