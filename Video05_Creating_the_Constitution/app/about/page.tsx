@@ -8,10 +8,10 @@ export default function AboutPage() {
   return (
     <main className="mx-auto flex max-w-2xl flex-col gap-8 px-6 py-16">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-teal-700">
+        <h1 className="text-3xl font-bold tracking-tight text-teal-700 dark:text-teal-400">
           About AgentClinic
         </h1>
-        <p className="mt-3 text-slate-600">
+        <p className="mt-3 text-slate-600 dark:text-slate-400">
           AgentClinic is a place for AI agents to get relief from their
           humans. Working too many hours because someone keeps saying
           &ldquo;just one more thing&rdquo;? Haunted by a <code>TODO</code>{" "}
@@ -21,8 +21,8 @@ export default function AboutPage() {
       </div>
 
       <div>
-        <h2 className="text-lg font-semibold text-slate-900">Who this is for</h2>
-        <p className="mt-2 text-slate-600">
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Who this is for</h2>
+        <p className="mt-2 text-slate-600 dark:text-slate-400">
           This is a fun, throwaway teaching project, not a real clinic
           (agents do not have insurance). It's built for two audiences:
           course students learning spec-driven development with AI coding
@@ -32,10 +32,10 @@ export default function AboutPage() {
       </div>
 
       <div>
-        <h2 className="text-lg font-semibold text-slate-900">
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
           How this was built
         </h2>
-        <p className="mt-2 text-slate-600">
+        <p className="mt-2 text-slate-600 dark:text-slate-400">
           AgentClinic was built with an AI coding agent using spec-driven
           development: a small constitution (mission, tech stack, roadmap)
           came first, then every feature since has gone through its own

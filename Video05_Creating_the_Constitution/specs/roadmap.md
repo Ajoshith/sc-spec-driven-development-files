@@ -82,6 +82,16 @@ still no staff-only concerns beyond what Phase 3 already built.
 - Simple search/filter on `/agents` and `/therapies` (by name).
 - Revisit empty/loading/error states across all new pages.
 
+## Phase 8 — Dark mode
+
+- Add a dark theme across the whole site (nav, home, list pages, detail
+  pages, appointments, about) using Tailwind CSS.
+- A toggle to switch between light and dark, with the choice persisted
+  across page navigation and reloads.
+- Visual/UX pass to keep the site looking genuinely nice in dark mode too
+  (still Steve's attractive, modern-browser bar), not just an inverted
+  palette.
+
 ## Later / explicitly not scheduled yet
 
 - Authentication.

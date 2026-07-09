@@ -2,6 +2,18 @@
 
 All notable changes to AgentClinic are recorded here, newest first.
 
+## 2026-07-09 — Phase 8: Dark mode
+
+- Added a persisted light/dark theme toggle in the nav, next to the
+  existing "Viewing as: Agent/Staff" toggle.
+- Every existing page (Home, Agents, Therapies, Appointments, About, and
+  both `/agents/[id]` and `/therapies/[id]` detail pages) now has a dark
+  theme.
+- Theme choice survives navigation and page reloads, with no flash of
+  the wrong theme on load.
+
+Spec: [specs/2026-07-09-dark-mode/](specs/2026-07-09-dark-mode/)
+
 ## 2026-07-09 — Phase 7: Appointments page, search, and filtering
 
 - Added a dedicated `/appointments` page holding the booking form and the
