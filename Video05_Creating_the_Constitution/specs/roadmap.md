@@ -29,20 +29,18 @@ wander over mid-build.
 - Staff and agents share this view for now (no auth yet — everyone's in the
   waiting room together).
 
-## Phase 3 — Booking flow
+## Phase 3 — Booking, roles, and polish
+
+Combines the former Phase 3 (booking), Phase 4 (staff vs. agent views),
+and Phase 5 (polish) into one phase, since together they round out the
+app into something demo-ready:
 
 - Book an appointment: pick an agent, a therapy, a time.
 - Appointment list view (upcoming/past).
 - Basic validation (no double-booking a time slot).
-
-## Phase 4 — Staff vs. agent views
-
 - Distinguish staff and agent perspectives in the dashboard (still no auth
   — a role switch or route split is enough at this stage).
 - Staff-only actions: manage therapies, cancel/reschedule appointments.
-
-## Phase 5 — Polish pass
-
 - Visual/UX pass for the attractive, modern-browser experience (Steve) —
   this is the phase where AgentClinic gets to look genuinely nice.
 - Responsive layout check.
