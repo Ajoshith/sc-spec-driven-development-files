@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { listTherapiesWithAilments } from "@/lib/queries";
-import TherapyList from "../TherapyList";
+import FilterableTherapyList from "../FilterableTherapyList";
 import AddTherapyForm from "../AddTherapyForm";
 import StaffOnly from "../StaffOnly";
 
@@ -21,7 +21,7 @@ export default function TherapiesPage() {
           The treatments on offer, and what they help with.
         </p>
       </div>
-      <TherapyList therapies={therapies} />
+      <FilterableTherapyList therapies={therapies} />
       <StaffOnly>
         <AddTherapyForm />
       </StaffOnly>

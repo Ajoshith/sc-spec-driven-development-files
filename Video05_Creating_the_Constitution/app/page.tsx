@@ -1,12 +1,4 @@
-import {
-  listAgentsWithAilments,
-  listTherapiesWithAilments,
-  listAppointmentsWithDetails,
-} from "@/lib/queries";
 import Link from "next/link";
-import BookingForm from "./BookingForm";
-import AppointmentsList from "./AppointmentsList";
-import ScrollToHash from "./ScrollToHash";
 
 const NAV_CARDS = [
   {
@@ -20,17 +12,13 @@ const NAV_CARDS = [
     body: "Browse the treatments on offer and what they help with.",
   },
   {
-    href: "/#appointments",
+    href: "/appointments",
     title: "Appointments",
     body: "Book a slot, or see what's upcoming.",
   },
 ];
 
 export default function HomePage() {
-  const agents = listAgentsWithAilments();
-  const therapies = listTherapiesWithAilments();
-  const appointments = listAppointmentsWithDetails();
-
   return (
     <main className="flex min-h-screen flex-col items-center gap-10 px-6 py-16">
       <div className="flex w-full max-w-3xl flex-col items-center gap-3 text-center">
@@ -53,22 +41,6 @@ export default function HomePage() {
             <p className="mt-1 text-sm text-slate-500">{card.body}</p>
           </Link>
         ))}
-      </div>
-
-      <ScrollToHash />
-
-      <div id="appointments" className="w-full max-w-3xl">
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-400">
-          Book an appointment
-        </h2>
-        <BookingForm agents={agents} therapies={therapies} />
-      </div>
-
-      <div className="w-full max-w-3xl">
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-400">
-          Appointments
-        </h2>
-        <AppointmentsList appointments={appointments} />
       </div>
     </main>
   );

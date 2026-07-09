@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { listAgentsWithAilments } from "@/lib/queries";
-import AgentList from "../AgentList";
+import FilterableAgentList from "../FilterableAgentList";
 
 export const metadata: Metadata = {
   title: "Agents — AgentClinic",
@@ -19,7 +19,7 @@ export default function AgentsPage() {
           Who's checked in, and what's ailing them.
         </p>
       </div>
-      <AgentList agents={agents} />
+      <FilterableAgentList agents={agents} />
     </main>
   );
 }
