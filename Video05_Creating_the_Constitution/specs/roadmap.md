@@ -46,6 +46,42 @@ app into something demo-ready:
 - Responsive layout check.
 - Empty/loading/error states across dashboard views.
 
+Phase 3 finished the original single-page MVP. From here, AgentClinic
+grows into a real multi-page site — more surface area, still no auth,
+still no staff-only concerns beyond what Phase 3 already built.
+
+## Phase 4 — Site shell and navigation
+
+- Add a persistent nav bar (Home, Agents, Therapies, Appointments) shared
+  across pages.
+- Home page becomes a landing/overview page — a short pitch plus links
+  into the rest of the site, not the dashboard itself.
+- Add a simple "About AgentClinic" content page — the mission, in the
+  site's own voice, for course/demo audiences per mission.md.
+
+## Phase 5 — Dedicated list pages
+
+- Move the agents list off the home page onto its own `/agents` route.
+- Move the therapies list onto its own `/therapies` route.
+- Each list page gets room to breathe (no longer squeezed into a
+  two-column dashboard grid) and its own empty state.
+
+## Phase 6 — Detail pages
+
+- `/agents/[id]`: a real per-agent page — ailments, and that agent's
+  upcoming/past appointments.
+- `/therapies/[id]`: a real per-therapy page — ailments it treats, and
+  that therapy's upcoming/past appointments.
+- List pages link into these instead of (or in addition to) expanding
+  inline.
+
+## Phase 7 — Appointments page, search, and filtering
+
+- Dedicated `/appointments` route: the booking form plus the
+  upcoming/past list, moved off the home page.
+- Simple search/filter on `/agents` and `/therapies` (by name).
+- Revisit empty/loading/error states across all new pages.
+
 ## Later / explicitly not scheduled yet
 
 - Authentication.

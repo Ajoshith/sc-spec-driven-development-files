@@ -2,6 +2,18 @@
 
 All notable changes to AgentClinic are recorded here, newest first.
 
+## 2026-07-09 — Phase 4: Site shell and navigation
+
+- Added a persistent nav bar (Home, Agents, Therapies, Appointments,
+  About) shared across pages.
+- Home page is now a landing pitch with three nav cards, instead of
+  opening straight into the dashboard.
+- Added an About page covering the mission and how the project was built.
+- First of four phases growing AgentClinic into a real multi-page site
+  (no auth, no new staff-only concerns).
+
+Spec: [specs/2026-07-09-site-shell-nav/](specs/2026-07-09-site-shell-nav/)
+
 ## 2026-07-09 — Phase 3: Booking, roles, and polish
 
 - Added a booking flow: pick an agent, a therapy, and a time to create an
