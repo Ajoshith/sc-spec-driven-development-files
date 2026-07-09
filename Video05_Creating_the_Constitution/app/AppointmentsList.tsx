@@ -9,7 +9,7 @@ export default function AppointmentsList({
   if (appointments.length === 0) {
     return (
       <p className="text-sm text-slate-500">
-        No appointments yet — book one above.
+        No appointments yet.
       </p>
     );
   }
