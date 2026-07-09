@@ -1,14 +1,10 @@
 import Link from "next/link";
 import RoleToggle from "./RoleToggle";
 
-// All real routes now (Appointments is still a hash on the home page
-// until Phase 7). <ScrollToHash> on the home page handles the actual
-// scroll reliably, since Next's own Link hash-scroll can race on pages
-// that fetch data.
 const ROUTE_LINKS = [
   { href: "/agents", label: "Agents" },
   { href: "/therapies", label: "Therapies" },
-  { href: "/#appointments", label: "Appointments" },
+  { href: "/appointments", label: "Appointments" },
 ];
 
 export default function NavBar() {

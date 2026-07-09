@@ -2,6 +2,20 @@
 
 All notable changes to AgentClinic are recorded here, newest first.
 
+## 2026-07-09 — Phase 7: Appointments page, search, and filtering
+
+- Added a dedicated `/appointments` page holding the booking form and the
+  upcoming/past appointments list, moved off the home page.
+- Home page now links to Agents, Therapies, and Appointments via three
+  nav cards, with no inline booking/appointments content of its own.
+- Added a live, client-side name filter on the Agents and Therapies list
+  pages, with a distinct empty state for "no matches" vs. "no data at
+  all."
+- Removed the now-unused hash-scroll helper that existed only to support
+  the old home-page appointments anchor.
+
+Spec: [specs/2026-07-09-appointments-search-filter/](specs/2026-07-09-appointments-search-filter/)
+
 ## 2026-07-09 — Phase 6: Detail pages
 
 - Added `/agents/[id]` pages showing an agent's ailments and their
