@@ -8,7 +8,7 @@ export default function AppointmentsList({
 }) {
   if (appointments.length === 0) {
     return (
-      <p className="text-sm text-slate-500">
+      <p className="text-sm text-slate-500 dark:text-slate-400">
         No appointments yet.
       </p>
     );
@@ -25,11 +25,11 @@ export default function AppointmentsList({
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
+        <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
           Upcoming
         </h3>
         {upcoming.length === 0 ? (
-          <p className="text-sm text-slate-500">No upcoming appointments.</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">No upcoming appointments.</p>
         ) : (
           <ul className="flex flex-col gap-2">
             {upcoming.map((appointment) => (
@@ -39,11 +39,11 @@ export default function AppointmentsList({
         )}
       </div>
       <div>
-        <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
+        <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
           Past
         </h3>
         {past.length === 0 ? (
-          <p className="text-sm text-slate-500">No past appointments.</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">No past appointments.</p>
         ) : (
           <ul className="flex flex-col gap-2">
             {past.map((appointment) => (

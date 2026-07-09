@@ -34,23 +34,23 @@ export default async function AgentDetailPage({
   return (
     <main className="mx-auto flex max-w-2xl flex-col gap-8 px-6 py-16">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-teal-700">
+        <h1 className="text-3xl font-bold tracking-tight text-teal-700 dark:text-teal-400">
           {agent.name}
         </h1>
-        <p className="mt-2 text-slate-600">This agent's ailments and appointments.</p>
+        <p className="mt-2 text-slate-600 dark:text-slate-400">This agent's ailments and appointments.</p>
       </div>
 
       <div>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-400">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
           Ailments
         </h2>
         {ailments.length === 0 ? (
-          <p className="text-sm text-slate-500">No ailments on file.</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">No ailments on file.</p>
         ) : (
           <ul className="flex flex-col gap-1">
             {ailments.map((ailment) => (
-              <li key={ailment.id} className="text-sm text-slate-600">
-                <span className="font-medium text-slate-800">{ailment.name}</span>
+              <li key={ailment.id} className="text-sm text-slate-600 dark:text-slate-400">
+                <span className="font-medium text-slate-800 dark:text-slate-200">{ailment.name}</span>
                 {ailment.description ? ` — ${ailment.description}` : ""}
               </li>
             ))}
@@ -59,7 +59,7 @@ export default async function AgentDetailPage({
       </div>
 
       <div>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-400">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
           Appointments
         </h2>
         <AppointmentsList appointments={appointments} />

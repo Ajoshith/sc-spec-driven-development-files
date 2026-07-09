@@ -25,7 +25,7 @@ export default function FilterableTherapyList({
         />
       )}
       {therapies.length > 0 && filtered.length === 0 ? (
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-slate-500 dark:text-slate-400">
           No therapies match &ldquo;{filter}&rdquo;.
         </p>
       ) : (
