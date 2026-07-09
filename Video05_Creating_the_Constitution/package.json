@@ -4,10 +4,25 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "dev": "next dev",
+    "build:next": "next build",
+    "start": "next start"
   },
-  "dependencies": {},
+  "dependencies": {
+    "better-sqlite3": "^12.11.1",
+    "next": "^16.2.10",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.2",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^26.1.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "postcss": "^8.5.16",
+    "tailwindcss": "^4.3.2",
     "typescript": "^5.5.3"
   },
   "private": true
