@@ -1,11 +1,13 @@
 import Link from "next/link";
+import RoleToggle from "./RoleToggle";
 
-// Plain <a> tags on purpose for the same-page anchor targets: Next's
-// <Link> same-page hash scroll has a timing race that sometimes fails to
-// scroll at all, while native anchor navigation is reliable every time.
-const ANCHOR_LINKS = [
-  { href: "/#agents", label: "Agents" },
-  { href: "/#therapies", label: "Therapies" },
+// All real routes now (Appointments is still a hash on the home page
+// until Phase 7). <ScrollToHash> on the home page handles the actual
+// scroll reliably, since Next's own Link hash-scroll can race on pages
+// that fetch data.
+const ROUTE_LINKS = [
+  { href: "/agents", label: "Agents" },
+  { href: "/therapies", label: "Therapies" },
   { href: "/#appointments", label: "Appointments" },
 ];
 
@@ -16,25 +18,28 @@ export default function NavBar() {
         <Link href="/" className="font-semibold text-teal-700">
           AgentClinic
         </Link>
-        <ul className="flex gap-5 text-sm font-medium text-slate-600">
-          <li>
-            <Link href="/" className="hover:text-teal-700">
-              Home
-            </Link>
-          </li>
-          {ANCHOR_LINKS.map((link) => (
-            <li key={link.label}>
-              <a href={link.href} className="hover:text-teal-700">
-                {link.label}
-              </a>
+        <div className="flex items-center gap-5">
+          <ul className="flex gap-5 text-sm font-medium text-slate-600">
+            <li>
+              <Link href="/" className="hover:text-teal-700">
+                Home
+              </Link>
             </li>
-          ))}
-          <li>
-            <Link href="/about" className="hover:text-teal-700">
-              About
-            </Link>
-          </li>
-        </ul>
+            {ROUTE_LINKS.map((link) => (
+              <li key={link.label}>
+                <Link href={link.href} className="hover:text-teal-700">
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+            <li>
+              <Link href="/about" className="hover:text-teal-700">
+                About
+              </Link>
+            </li>
+          </ul>
+          <RoleToggle />
+        </div>
       </nav>
     </header>
   );
