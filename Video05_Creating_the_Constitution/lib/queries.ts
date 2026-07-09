@@ -84,6 +84,48 @@ export function listAppointmentsWithDetails(): AppointmentWithDetails[] {
     .all() as AppointmentWithDetails[];
 }
 
+export function getAgent(id: number): Agent | undefined {
+  return getDb().prepare("SELECT id, name FROM agents WHERE id = ?").get(id) as
+    | Agent
+    | undefined;
+}
+
+export function getTherapy(id: number): Therapy | undefined {
+  return getDb()
+    .prepare("SELECT id, name, description FROM therapies WHERE id = ?")
+    .get(id) as Therapy | undefined;
+}
+
+export function listAppointmentsForAgent(agentId: number): AppointmentWithDetails[] {
+  return getDb()
+    .prepare(
+      `SELECT appointments.id, appointments.agent_id, appointments.therapy_id,
+              appointments.scheduled_at, agents.name AS agent_name,
+              therapies.name AS therapy_name
+       FROM appointments
+       JOIN agents ON agents.id = appointments.agent_id
+       JOIN therapies ON therapies.id = appointments.therapy_id
+       WHERE appointments.agent_id = ?
+       ORDER BY appointments.scheduled_at`
+    )
+    .all(agentId) as AppointmentWithDetails[];
+}
+
+export function listAppointmentsForTherapy(therapyId: number): AppointmentWithDetails[] {
+  return getDb()
+    .prepare(
+      `SELECT appointments.id, appointments.agent_id, appointments.therapy_id,
+              appointments.scheduled_at, agents.name AS agent_name,
+              therapies.name AS therapy_name
+       FROM appointments
+       JOIN agents ON agents.id = appointments.agent_id
+       JOIN therapies ON therapies.id = appointments.therapy_id
+       WHERE appointments.therapy_id = ?
+       ORDER BY appointments.scheduled_at`
+    )
+    .all(therapyId) as AppointmentWithDetails[];
+}
+
 function findTherapyConflict(
   therapyId: number,
   scheduledAt: string,

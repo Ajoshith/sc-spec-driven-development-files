@@ -2,6 +2,18 @@
 
 All notable changes to AgentClinic are recorded here, newest first.
 
+## 2026-07-09 — Phase 6: Detail pages
+
+- Added `/agents/[id]` pages showing an agent's ailments and their
+  upcoming/past appointments.
+- Added `/therapies/[id]` pages showing the ailments a therapy treats
+  and that therapy's upcoming/past appointments.
+- Agents and Therapies list pages now link into these detail pages
+  instead of expanding ailments inline.
+- Visiting a detail page for an unknown id now shows a proper 404.
+
+Spec: [specs/2026-07-09-detail-pages/](specs/2026-07-09-detail-pages/)
+
 ## 2026-07-09 — Phase 5: Dedicated list pages
 
 - Agents and Therapies moved off the home page onto their own
